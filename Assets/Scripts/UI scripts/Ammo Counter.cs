@@ -1,28 +1,38 @@
 using UnityEngine;
+using UnityEngine.UI;
 using TMPro;
 
 public class AmmoCounter : MonoBehaviour
 {
-    private TMP_Text ammoText;
-    [SerializeField] private PlayerController mc;
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    [SerializeField] private Image scrapFillImage; // Assign in Inspector
+    private PlayerController player;
+    public GameObject VictoryPanel;
+    private GameTimer gameTimer;
+    public TMP_Text finalTime;
+    public TMP_Text scrapText;
+
+    private void Start()
     {
-        ammoText = GetComponent<TMP_Text>();
+        gameTimer = FindAnyObjectByType<GameTimer>();
+        player = FindObjectOfType<PlayerController>(); // Get reference to player
     }
 
-    // Update is called once per frame
-    void Update()
+    private void Update()
     {
-        UpdateAmmoUI();
+        scrapText.text = $"{player.scraps}/{player.scraps2win}";
+        if (player != null && player.scraps2win > 0)
+        {
+            scrapFillImage.fillAmount = (float)player.scraps / player.scraps2win;
+        }
+        if (player.scraps == player.scraps2win)
+        {
+            Win();
+        }
     }
-    void UpdateAmmoUI()
+    void Win()
     {
-        if (mc.pistolMode)
-            ammoText.text = $"{mc.pistolAmmoInClip} / {mc.pistolTotalAmmo}";
-        else if (mc.shotgunMode)
-            ammoText.text = $"{mc.shotgunAmmoInClip} / {mc.shotgunTotalAmmo}";
-        else if (mc.railgunMode)
-            ammoText.text = $"{mc.railgunAmmoInClip} / {mc.railgunTotalAmmo}";
+        VictoryPanel.SetActive(true);
+        finalTime = gameTimer.timerText;
     }
 }
+

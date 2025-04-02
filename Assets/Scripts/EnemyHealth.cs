@@ -18,7 +18,7 @@ public class EnemyHealth : MonoBehaviour
     public void GetHit(float damage)
     {
         health -= damage;
-        Debug.Log("owie");
+        
         StartCoroutine(DamageFx());
         if (health <= 0)
         {
@@ -39,6 +39,28 @@ public class EnemyHealth : MonoBehaviour
     }
     void GetRekt()
     {
+        int reward = Random.Range(0, 3); // 0 = Shotgun Ammo, 1 = Railgun Ammo, 2 = Scraps
+        PlayerController player = FindObjectOfType<PlayerController>();
+
+        if (player != null)
+        {
+            switch (reward)
+            {
+                case 0:
+                    player.shotgunTotalAmmo += 12;
+                    
+                    break;
+                case 1:
+                    player.railgunTotalAmmo += 9;
+                   
+                    break;
+                case 2:
+                    player.scraps += Random.Range(2,6);
+                    
+                    break;
+            }
+        }
+
         FindObjectOfType<SpawnSystem>().EnemyDestroyed(gameObject);
     }
 }

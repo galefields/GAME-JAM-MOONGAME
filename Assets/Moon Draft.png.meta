@@ -1,13 +1,10 @@
 fileFormatVersion: 2
-guid: 1b34db16619c9934793ea6a3ef52aa93
+guid: d1bb78e7701772a4095812ae00f5a8c6
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -8812462626281345537
-    second: MC_Railgun_0
-  - first:
-      213: 1756926483720898770
-    second: MC_Railgun_1
+      213: -4853829460696448558
+    second: Moon Draft_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -49,12 +46,12 @@ TextureImporter:
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
-  spriteMode: 1
+  spriteMode: 2
   spriteExtrude: 1
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 300
+  spritePixelsToUnits: 100
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -103,13 +100,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: MC_Railgun_0
+      name: Moon Draft_0
       rect:
         serializedVersion: 2
-        x: 508
-        y: 965
-        width: 9
-        height: 6
+        x: 0
+        y: 0
+        width: 1920
+        height: 1080
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -118,30 +115,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: ffd281c8ee7d3b580800000000000000
-      internalID: -8812462626281345537
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: MC_Railgun_1
-      rect:
-        serializedVersion: 2
-        x: 247
-        y: 65
-        width: 498
-        height: 894
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 2d809ae045bd16810800000000000000
-      internalID: 1756926483720898770
+      spriteID: 2d1ccda72dbb3acb0800000000000000
+      internalID: -4853829460696448558
       vertices: []
       indices: 
       edges: []
@@ -150,7 +125,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 5e97eb03825dee720800000000000000
+    spriteID: 
     internalID: 0
     vertices: []
     indices: 
@@ -159,9 +134,7 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable:
-      MC_Railgun_0: -8812462626281345537
-      MC_Railgun_1: 1756926483720898770
+    nameFileIdTable: {}
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

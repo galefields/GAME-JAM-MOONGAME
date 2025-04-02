@@ -10,6 +10,9 @@ public class PlayerController : MonoBehaviour
     private float bulletSpeed = 100;
     private float maxDistance = 25;
 
+    public int scraps = 10;
+    public int scraps2win = 100;
+
     public bool pistolMode;
     public bool shotgunMode;
     public bool railgunMode;
@@ -28,6 +31,13 @@ public class PlayerController : MonoBehaviour
 
     public bool Reloading = false;
     private float reloadTime;
+    private AmmoBar ammoBar;
+
+    private Barrier currentBarrier;
+    private bool nearBarrier = false;
+    private bool repairing = false;
+    private float repairTime = 2.5f;
+    [SerializeField] private GameObject repairPromptUI;
 
     [SerializeField] private TrailRenderer pistolTrail;
     [SerializeField] private TrailRenderer railgunTrail;
@@ -35,25 +45,26 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private LayerMask enemyLayer;
     [SerializeField] private LayerMask barrierLayer;
     [SerializeField] private LayerMask BulletHitLayer;
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         Pistol();
         rb = GetComponent<Rigidbody2D>();
         mc = GetComponent<Transform>();
+        ammoBar = FindObjectOfType<AmmoBar>();
         bulletPoint = transform.GetChild(0);
+        UpdateAmmoUI();
     }
-    // Update is called once per frame
     void Update()
     {
         float moveHorizontal = Input.GetAxis("Horizontal");
         float moveVertical = Input.GetAxis("Vertical");
-        rb.linearVelocity = new Vector2 (moveHorizontal, moveVertical) * speed;
+        rb.linearVelocity = new Vector2(moveHorizontal, moveVertical) * speed;
         RotateGuy();
-       
+
         if (Input.GetMouseButtonDown(0) && !Reloading)
         {
-            Shoot();
+            if (!HasAmmo()) StartCoroutine(Reload());
+            else Shoot();
         }
         if (Input.GetKeyDown(KeyCode.R) && !Reloading)
         {
@@ -69,6 +80,22 @@ public class PlayerController : MonoBehaviour
         {
             CycleWeapon(-1);
         }
+        
+        if (nearBarrier && currentBarrier.health < 50)
+    {
+        if (Input.GetKey(KeyCode.E) && !repairing)
+        {
+            StartCoroutine(RepairBarrier());
+        }
+    }
+
+    // If player moves away, cancel repair
+    if (repairing && !nearBarrier)
+    {
+        StopCoroutine(RepairBarrier());
+        repairing = false;
+        HideRepairUI();
+    }
     }
     void Shoot()
     {
@@ -78,23 +105,19 @@ public class PlayerController : MonoBehaviour
             return;
         }
 
-        // Start at the bullet point
         Vector3 startPoint = bulletPoint.position;
 
         if (shotgunMode)
         {
-            // Shotgun has multiple pellets with spread
-            ShootWithSpread(startPoint, 5, 30f, 35f); // 5 pellets, 30° spread, 35 damage
+            ShootWithSpread(startPoint, 5, 30f, 35f);
         }
         else if (pistolMode)
         {
-            // Pistol is a single shot with direct damage
-            ShootSingle(startPoint, 35f); // 35 damage for pistol
+            ShootSingle(startPoint, 35f);
         }
         else if (railgunMode)
         {
-            // Railgun is a single shot with high damage
-            ShootSingle(startPoint, 100f); // 100 damage for railgun
+            ShootSingle(startPoint, 100f);
         }
 
         ReduceAmmo();
@@ -102,7 +125,6 @@ public class PlayerController : MonoBehaviour
 
     void ShootSingle(Vector3 startPoint, float damage)
     {
-        // Fire a single shot in the current direction
         Vector3 direction = bulletPoint.up;
         Vector3 endPoint = startPoint + direction * maxDistance;
 
@@ -185,16 +207,19 @@ public class PlayerController : MonoBehaviour
     void ReduceAmmo()
     {
         if (pistolMode && pistolAmmoInClip > 0)
-            pistolAmmoInClip = Mathf.Max(0, pistolAmmoInClip - 1);
-        if (shotgunMode && shotgunAmmoInClip > 0)
-            shotgunAmmoInClip = Mathf.Max(0, shotgunAmmoInClip - 1);
-        if (railgunMode && railgunAmmoInClip > 0)
-            railgunAmmoInClip = Mathf.Max(0, railgunAmmoInClip - 1);
+            pistolAmmoInClip--;
+        else if (shotgunMode && shotgunAmmoInClip > 0)
+            shotgunAmmoInClip--;
+        else if (railgunMode && railgunAmmoInClip > 0)
+            railgunAmmoInClip--;
+
+        UpdateAmmoUI();
     }
     IEnumerator Reload()
     {
-        Debug.Log("Reloading...");
         Reloading = true;
+        ammoBar.StartReload(reloadTime);
+
         yield return new WaitForSeconds(reloadTime);
 
         if (pistolMode)
@@ -220,28 +245,41 @@ public class PlayerController : MonoBehaviour
         }
 
         Reloading = false;
-        Debug.Log("Reloaded!");
+        UpdateAmmoUI();
+    }
+    void UpdateAmmoUI()
+    {
+        if (ammoBar != null)
+        {
+            int currentAmmo = pistolMode ? (int)pistolAmmoInClip : shotgunMode ? (int)shotgunAmmoInClip : (int)railgunAmmoInClip;
+            float totalAmmo = pistolMode ? pistolTotalAmmo : shotgunMode ? shotgunTotalAmmo : railgunTotalAmmo;
+
+            ammoBar.UpdateAmmo(currentAmmo, totalAmmo);
+        }
     }
     void Pistol()
     {
         pistolMode = true;
         shotgunMode = false;
         railgunMode = false;
-        reloadTime = 1.5f;
+        reloadTime = 0.5f;
+        UpdateAmmoUI();
     }
     void Shotgun()
     {
         shotgunMode = true;
         pistolMode = false;
         railgunMode = false;
-        reloadTime = 2.5f;
+        reloadTime = 1f;
+        UpdateAmmoUI();
     }
     void Railgun()
     {
         railgunMode = true;
         pistolMode = false;
         shotgunMode = false;
-        reloadTime = 3.5f;
+        reloadTime = 1f;
+        UpdateAmmoUI();
     }
 
     void CycleWeapon(int direction)
@@ -269,7 +307,7 @@ public class PlayerController : MonoBehaviour
     {
         TrailRenderer trailPrefab = railgunMode ? railgunTrail : pistolTrail;
         TrailRenderer trail = Instantiate(trailPrefab, start, Quaternion.identity);
-        
+
         float time = 0;
         float duration = Vector3.Distance(start, end) / bulletSpeed;
 
@@ -282,6 +320,66 @@ public class PlayerController : MonoBehaviour
 
         trail.transform.position = end;
         Destroy(trail.gameObject);
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.CompareTag("Barrier"))
+        {
+            currentBarrier = collision.GetComponent<Barrier>();
+
+            if (currentBarrier.health < 50)
+            {
+                ShowRepairUI();
+                nearBarrier = true;
+                ammoBar.reloadBar.fillAmount = 0;
+            }
+        }
+    }
+
+    private void OnTriggerExit2D(Collider2D collision)
+    {
+        if (collision.CompareTag("Barrier"))
+        {
+            HideRepairUI();
+            nearBarrier = false;
+            currentBarrier = null;
+        }
+    }
+
+    private IEnumerator RepairBarrier()
+    {
+        repairing = true;
+        float elapsed = 0;
+        scraps -= 5;
+        while (elapsed < repairTime)
+        {
+            if (!nearBarrier) break; // Stop if player moves away
+            ammoBar.Bar.SetActive(true);
+            elapsed += Time.deltaTime;
+            ammoBar.reloadBar.fillAmount = elapsed / repairTime; // Update UI Fill
+            yield return null;
+        }
+
+        if (nearBarrier) // If still near after full repair time
+        {
+            ammoBar.Bar.SetActive(false);
+            currentBarrier.RepairBarrier(50);
+        }
+
+        repairing = false;
+        HideRepairUI();
+    }
+
+    void ShowRepairUI()
+    {
+        repairPromptUI.SetActive(true);
+        ammoBar.reloadBar.fillAmount = 0;
+    }
+
+    void HideRepairUI()
+    {
+        repairPromptUI.SetActive(false);
     }
     void RotateGuy()
     {
