@@ -4,7 +4,6 @@ public class Pauser : MonoBehaviour
 {
     public GameObject pauseMenuUI;
     public bool isPaused = false;
-
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.Escape))
@@ -44,6 +43,5 @@ public class Pauser : MonoBehaviour
     {
         Time.timeScale = 1f;
         SceneManager.LoadScene("Main Menu");
-        AudioManager.instance.Play("Clicking Sound");
     }
 }

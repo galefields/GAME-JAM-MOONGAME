@@ -38,5 +38,6 @@ public class GameTimer : MonoBehaviour
         private void TimerEnded()
     { 
             Debug.Log("Freshman boyfrienddd!!!");
+            SceneManager.LoadScene("WinScene");
     }
 }

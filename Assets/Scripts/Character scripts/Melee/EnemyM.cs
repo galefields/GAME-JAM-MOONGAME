@@ -11,10 +11,15 @@ public class EnemyM : MonoBehaviour
     private Rigidbody2D rb;
     public float attackRate = 1f;
     private Coroutine attackCoroutine;
+
+    private SpriteRenderer spriteRenderer;
+    [SerializeField] private Sprite defaultSprite;
+    [SerializeField] private Sprite attackSprite;
     private void Start()
     {
         rb = GetComponent<Rigidbody2D>();
         rb.linearVelocity = Vector2.left * speed;
+        spriteRenderer = GetComponent<SpriteRenderer>();
     }
     private void OnEnable()
     {
@@ -31,15 +36,16 @@ public class EnemyM : MonoBehaviour
             stopped = true;
             rb.linearVelocity = Vector2.zero;
             if (attackCoroutine == null)
-            { attackCoroutine = StartCoroutine(Bash()); }
+            { attackCoroutine = StartCoroutine(Bash());}
         }
     }
     private IEnumerator Bash()
     {
-        while (barrier != null && stopped)
+        while (stopped)
         {
-            Debug.Log("dawg ur barrier is getting fucked");
-            barrier.TakeDamage(10);
+            spriteRenderer.sprite = attackSprite; barrier.TakeDamage(10);
+            yield return new WaitForSeconds(0.2f);
+            spriteRenderer.sprite = defaultSprite;
             yield return new WaitForSeconds(attackRate);
         }
     }
@@ -50,6 +56,7 @@ public class EnemyM : MonoBehaviour
             StopCoroutine(attackCoroutine);
             attackCoroutine = null;
         }
+        stopped = false;
     }
 }
 

@@ -25,7 +25,7 @@ Transform:
   m_GameObject: {fileID: 2132645878410738180}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -1.5, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 2, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -60,14 +60,14 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4876651500402952187}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0.7071068, w: 0.7071068}
   m_LocalPosition: {x: 4.74, y: 0.11, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.6, y: 0.6, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 8301019794043882049}
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 90}
 --- !u!212 &2977724436709953879
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -112,7 +112,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: -2413806693520163455, guid: ebe73ca9363db456bacf42c025bb4847, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 000238ab9a0915e40ab9fe38fd2bb002, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -161,13 +161,13 @@ BoxCollider2D:
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 1, y: 1}
+    oldSize: {x: 3.4133334, y: 3.4133334}
     newSize: {x: 1, y: 2}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 1, y: 1}
+  m_Size: {x: 3, y: 1}
   m_EdgeRadius: 0
 --- !u!114 &1477222667188555678
 MonoBehaviour:
@@ -182,9 +182,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speed: 3
-  distance: 2
+  stopTime: 2
   projectilePrefab: {fileID: 9051911095290657902, guid: 8bdfb01e1464a5d49a01258cedaa91e8, type: 3}
   fireRate: 4.25
+  defaultSprite: {fileID: 21300000, guid: 000238ab9a0915e40ab9fe38fd2bb002, type: 3}
+  attackSprite: {fileID: 21300000, guid: 7ff7268e5b5d9f548b07a9e8ae17556d, type: 3}
 --- !u!50 &-7134730100179352043
 Rigidbody2D:
   serializedVersion: 5

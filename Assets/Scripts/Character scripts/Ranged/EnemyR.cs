@@ -14,10 +14,14 @@ public class EnemyR : MonoBehaviour
     public float fireRate = 4.25f;
     private Coroutine shootingCoroutine;
 
+    private SpriteRenderer spriteRenderer;
+    [SerializeField] private Sprite defaultSprite;
+    [SerializeField] private Sprite attackSprite;
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
         bulletPoint = transform.GetChild(0);
+        spriteRenderer = GetComponent<SpriteRenderer>();
     }
 
     private void OnEnable()
@@ -42,8 +46,11 @@ public class EnemyR : MonoBehaviour
     {
         while (true)
         {
-            ShootRock();
+            ShootRock(); spriteRenderer.sprite = attackSprite;
+            yield return new WaitForSeconds (0.2f);
+            spriteRenderer.sprite = defaultSprite;
             yield return new WaitForSeconds(fireRate);
+           
         }
     }
 
